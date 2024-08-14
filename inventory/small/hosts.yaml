@@ -1,0 +1,41 @@
+all:
+  hosts:
+    master1:
+      ansible_host: ##MASTER1##
+      ip: ##MASTER1##
+      access_ip: ##MASTER1##
+    worker1:
+      ansible_host: ##WORKER1##
+      ip: ##WORKER1##
+      access_ip: ##WORKER1##
+    worker2:
+      ansible_host: ##WORKER2##
+      ip: ##WORKER2##
+      access_ip: ##WORKER2##
+    worker3:
+      ansible_host: ##WORKER3##
+      ip: ##WORKER3##
+      access_ip: ##WORKER3##
+    worker4:
+      ansible_host: ##WORKER4##
+      ip: ##WORKER4##
+      access_ip: ##WORKER4##
+  children:
+    kube_control_plane:
+      hosts:
+        master1:
+    kube_node:
+      hosts:
+        worker1:
+        worker2:
+        worker3:
+        worker4:
+    etcd:
+      hosts:
+        master1:
+    k8s_cluster:
+      children:
+        kube_control_plane:
+        kube_node:
+    calico_rr:
+      hosts: {}
