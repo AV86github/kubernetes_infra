@@ -91,7 +91,7 @@ calico_pool_blocksize: 26
 
 # IP in IP and VXLAN is mutually exclusive modes.
 # set IP in IP encapsulation mode: "Always", "CrossSubnet", "Never"
-calico_ipip_mode: 'CrossSubnet'
+# calico_ipip_mode: 'Never'
 
 # set VXLAN encapsulation mode: "Always", "CrossSubnet", "Never"
 # calico_vxlan_mode: 'Always'
