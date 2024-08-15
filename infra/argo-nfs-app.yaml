@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nfs-app
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: nfs
+    server: https://kubernetes.default.svc
+  project:  infra
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+  source:
+    repoURL: https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+    targetRevision: 4.0.18
+    chart: nfs-subdir-external-provisioner
+    helm:
+      values: |
+              nfs:
+                server: 192.168.31.40
+                path: /volume1/k8s
+              storageClass:
+                defaultClass: true
+              tolerations:
+                - key: "node-role"
+                  operator: "Equal"
+                  value: "infra"
+                  effect: "NoSchedule"
+
