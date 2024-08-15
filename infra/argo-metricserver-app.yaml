@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metricserver-app
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: metricserver
+    server: https://kubernetes.default.svc
+  project:  infra
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+  source:
+    repoURL: https://kubernetes-sigs.github.io/metrics-server/
+    targetRevision: 3.12.1
+    chart: metrics-server
+    helm:
+      values: |
+              affinity:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: infra
+                        operator: In
+                        values:
+                        - "true"
+              tolerations:
+                - key: "node-role"
+                  operator: "Equal"
+                  value: "infra"
+                  effect: "NoSchedule"
