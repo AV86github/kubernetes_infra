@@ -36,3 +36,5 @@ spec:
                   operator: "Equal"
                   value: "infra"
                   effect: "NoSchedule"
+              args:
+                - --kubelet-insecure-tls
