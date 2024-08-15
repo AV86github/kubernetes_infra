@@ -25,6 +25,8 @@ spec:
               app:
                 ingress:
                   enabled: true
+                  dashboard:
+                    enabled: false
                   hosts:
                     - dashboard.kube.avl.home
 
