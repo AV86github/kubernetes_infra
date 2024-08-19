@@ -1,0 +1,148 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-app
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  project:  infra
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 61.3.0
+    chart: kube-prometheus-stack
+    helm:
+      values: |
+              prometheus:
+                prometheusSpec:
+                  podMonitorSelectorNilUsesHelmValues: false
+                  serviceMonitorSelectorNilUsesHelmValues: false
+                  affinity:
+                    nodeAffinity:
+                      requiredDuringSchedulingIgnoredDuringExecution:
+                        nodeSelectorTerms:
+                        - matchExpressions:
+                          - key: infra
+                            operator: In
+                            values:
+                            - "true"
+                  tolerations:
+                    - key: "node-role"
+                      operator: "Equal"
+                      value: "infra"
+                      effect: "NoSchedule"
+
+              prometheusOperator:
+                affinity:
+                  nodeAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      nodeSelectorTerms:
+                      - matchExpressions:
+                        - key: infra
+                          operator: In
+                          values:
+                          - "true"
+                tolerations:
+                  - key: "node-role"
+                    operator: "Equal"
+                    value: "infra"
+                    effect: "NoSchedule"
+
+              alertmanager:
+                alertmanagerSpec:
+                  affinity:
+                    nodeAffinity:
+                      requiredDuringSchedulingIgnoredDuringExecution:
+                        nodeSelectorTerms:
+                        - matchExpressions:
+                          - key: infra
+                            operator: In
+                            values:
+                            - "true"
+                  tolerations:
+                    - key: "node-role"
+                      operator: "Equal"
+                      value: "infra"
+                      effect: "NoSchedule"
+
+              kube-state-metrics:
+                tolerations:
+                - key: "node-role"
+                  operator: "Equal"
+                  value: "infra"
+                  effect: "NoSchedule"
+                affinity:
+                  nodeAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      nodeSelectorTerms:
+                      - matchExpressions:
+                        - key: infra
+                          operator: In
+                          values:
+                          - "true"
+
+              grafana:
+                dashboardProviders:
+                 dashboardproviders.yaml:
+                   apiVersion: 1
+                   providers:
+                   - name: 'infra'
+                     orgId: 1
+                     folder: 'infra'
+                     type: file
+                     disableDeletion: false
+                     editable: true
+                     options:
+                       path:  /var/lib/grafana/dashboards/infra
+                dashboards:
+                  infra:
+                    kubernetes-overview:
+                      gnetId: 21410
+                      datasource: Prometheus
+                      revision: 2
+                    node-exporter-full:
+                      gnetId: 1860
+                      revision: 37
+                      datasource: Prometheus
+                    kubernetes-service-logs:
+                      gnetId: 15141
+                      datasource: loki
+                    ingress-nginx:
+                      gnetId: 9614
+                      datasource: Prometheus
+
+                additionalDataSources:
+                  - name: logging
+                    type: loki
+                    url: http://loki-gateway.logging.svc.cluster.local
+
+                tolerations:
+                - key: "node-role"
+                  operator: "Equal"
+                  value: "infra"
+                  effect: "NoSchedule"
+                affinity:
+                  nodeAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      nodeSelectorTerms:
+                      - matchExpressions:
+                        - key: infra
+                          operator: In
+                          values:
+                          - "true"
+                ingress:
+                  enabled: true
+                  hosts:
+                    - grafana.avl.home
+                  ingressClassName: nginx
+
+
