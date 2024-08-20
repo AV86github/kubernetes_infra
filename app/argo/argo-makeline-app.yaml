@@ -18,5 +18,5 @@ spec:
     - CreateNamespace=true
   source:
     repoURL: https://github.com/AV86github/kubernetes_infra.git
-    path: argo/metallb
+    path: app/makeline-service/dev
     targetRevision: HEAD
