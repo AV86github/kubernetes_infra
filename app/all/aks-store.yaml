@@ -562,9 +562,10 @@ kind: Ingress
 metadata:
   name: store-front
 spec:
-  ingressClassName: webapprouting.kubernetes.azure.com
+  ingressClassName: nginx
   rules:
-  - http:
+  - host: front.avl.home
+    http:
       paths:
       - path: /
         pathType: Prefix
@@ -579,9 +580,10 @@ kind: Ingress
 metadata:
   name: store-admin
 spec:
-  ingressClassName: webapprouting.kubernetes.azure.com
+  ingressClassName: nginx
   rules:
-  - http:
+  - host: front-admin.avl.home
+    http:
       paths:
       - path: /
         pathType: Prefix
