@@ -1,4 +1,9 @@
 prometheus:
+  ingress:
+    enabled: true
+    hosts:
+      - prom.avl.home
+    ingressClassName: nginx
   prometheusSpec:
     podMonitorSelectorNilUsesHelmValues: false
     serviceMonitorSelectorNilUsesHelmValues: false
@@ -92,9 +97,6 @@ grafana:
       kubernetes-service-logs:
         gnetId: 15141
         datasource: loki
-      ingress-nginx:
-        gnetId: 9614
-        datasource: Prometheus
 
   additionalDataSources:
     - name: logging
