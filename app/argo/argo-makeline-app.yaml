@@ -17,6 +17,6 @@ spec:
     syncOptions:
     - CreateNamespace=true
   source:
-    repoURL: https://github.com/AV86github/kubernetes_infra.git
-    path: app/makeline-service/dev
+    repoURL: http://gitlab.avl.home/k8s/argo_repo.git
+    path: makeline-service/dev
     targetRevision: HEAD
