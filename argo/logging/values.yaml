@@ -7,7 +7,7 @@ promtail:
   - key: "node-role"
     operator: "Equal"
     value: "infra"
-    effect: "NoSchedule
+    effect: "NoSchedule"
 
 loki:
   deploymentMode: SingleBinary
@@ -22,9 +22,9 @@ loki:
         ruler: ruler
         admin: admin
       s3:
-        endpoint: http://minio.avl.home
-        accessKeyId: ##########
-        secretAccessKey: #########
+        endpoint:
+        accessKeyId:
+        secretAccessKey:
         s3ForcePathStyle: true
         insecure: true
     schemaConfig:
@@ -39,7 +39,7 @@ loki:
 
   test:
     enabled: false
-  selfMonitoring: 
+  selfMonitoring:
     enabled: false
   lokiCanary:
     enabled: false
@@ -48,7 +48,6 @@ loki:
     extraVolumeMounts:
     - name: loki
       mountPath: /var/loki
-    # -- Volumes to add to the single binary pods
     extraVolumes:
     - name: loki
       emptyDir: {}
@@ -60,7 +59,7 @@ loki:
       operator: "Equal"
       value: "infra"
       effect: "NoSchedule"
-    affinity: 
+    affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
